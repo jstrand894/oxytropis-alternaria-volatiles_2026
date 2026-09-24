@@ -1,0 +1,135 @@
+---
+title: "Field Locoweed Proc"
+author: "Jackson Strand"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r libraries}
+library(compositions)
+library(tidyverse)
+library(readxl)
+set.seed(1)
+```
+
+```{r read in raw}
+# SPRING 2022 DATA
+field22 <-
+read_excel("data-files/2022\ Field\ Locoweed.xlsx", sheet = "RAW proc") %>%
+  mutate(year = "2022")
+
+# SPRING 2023 DATA
+field23 <-
+  read_excel("data-files/2023\ Field\ Locoweed.xlsx", sheet = "proc") %>%
+  mutate(year = "2023")
+```
+
+
+```{r field_comb}
+field_comb <-
+field22 %>%
+  dplyr::select(sample, plant.id, compound, ngghr, year, swa, collection.type, pair2) %>%
+  rbind(field23 %>%
+          rename(collection.type = type) %>%
+          dplyr::select(sample, plant.id, compound, ngghr, year, swa, collection.type, pair2)) %>% 
+  mutate(collection.type = case_when(
+    collection.type == "l" ~ "leaves",
+    collection.type == "f" ~ "flowers",
+    collection.type == "s" ~ "senesced_leaves",
+    TRUE ~ collection.type)) %>% 
+  filter(!collection.type %in% c("0", NA, "NA"))
+
+```
+
+```{r field_comb_clean}
+field_comb_clean <- 
+  field_comb %>%
+  filter(compound %in% c("heptanal", "sixmethyl", "octanal",
+                         "z3hex", "dlimonene", "nonanal", 
+                         "decanal", "methylsalicylate", "cisthreehexiso")) %>%
+  dplyr::select(sample, plant.id, compound, ngghr, year, pair2) %>%
+  group_by(sample, plant.id, compound, year, pair2) %>%
+  na.omit() %>%
+  dplyr::reframe(ngghr = sum(ngghr)) %>%
+  distinct() %>%
+  pivot_wider(names_from = "compound",
+              values_from = "ngghr") %>%
+  pivot_longer(-c(plant.id, sample, year, pair2),
+               names_to = "compound",
+               values_to = "ngghr") %>%
+  replace(is.na(.), 0) %>% filter(compound != "NA") %>%
+  mutate(ngghr = log(ngghr + 1.01, 2)) %>%
+  pivot_wider(names_from = "compound",
+              values_from = "ngghr") %>%
+  left_join(field_comb %>% dplyr::select(-ngghr, -compound),
+            by = c("sample", "year", "plant.id", "pair2"))
+
+ 
+```
+
+```{r field_comb_clr}
+field_comb_clr <-
+field_comb_clean %>%
+  na.omit() %>%
+  distinct(plant.id, year, .keep_all = TRUE) %>%
+  pivot_longer(-c(sample, plant.id, year, collection.type, swa, pair2),
+               names_to = "compound",
+               values_to = "ngghr") %>%
+  dplyr::select(plant.id, ngghr, compound, collection.type, year, pair2) %>%
+  pivot_wider(names_from = "compound",
+              values_from = "ngghr") %>%
+    # combine year and plant id into one column
+  unite(plant.id, plant.id, year, collection.type, pair2, sep = "~") %>%
+  column_to_rownames("plant.id") %>%
+  clr()
+
+
+```
+
+```{r field_comb_clr_final}
+field_comb_clr_final <-
+field_comb_clr %>%
+  as.data.frame() %>%
+  rownames_to_column("plant.id") %>%
+    # move year and plant id back to being sepearte columns
+  separate(plant.id, into = c("plant.id", "year", "collection.type", "pair2"), sep = "~") %>%
+  pivot_longer(-c(plant.id, year, pair2, collection.type),
+               names_to = "compound",
+               values_to = "ngghr") %>%
+  # add a value of 2 to each ngghr to remove negatives
+  mutate(ngghr = ngghr + 4) %>%
+  pivot_wider(names_from = "compound",
+              values_from = "ngghr") %>%
+  left_join(field_comb_clean %>%
+            dplyr::select(plant.id, swa, year, collection.type, pair2) %>%
+            mutate(plant.id = as.character(plant.id)),
+            by = c("plant.id","year", "collection.type", "pair2")) %>%
+  mutate_at(vars(swa, year, collection.type, pair2), list(factor)) %>%
+  distinct()
+
+```
+
+
+```{r compounds}
+compounds <- c('sixmethyl',
+               'z3hex',
+               'nonanal',
+               'dlimonene',
+               'methylsalicylate',
+               # 'decanal',
+               'cisthreehexiso',
+               'dodecanal',
+               # 'heptadecanal',
+               'octanal',
+               'bocimene',
+               'bmyrcene',
+               'heptanal')
+```
+
+
+
+
+
