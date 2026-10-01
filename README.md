@@ -1,5 +1,7 @@
 # Locoweed Volatiles 2026
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22928586.svg)](https://doi.org/10.5281/zenodo.22928586)
+
 ![](img/loco-bee2.jpg)
 
 Analysis of volatile organic compound (VOC) profiles in *Oxytropis sericea* (white locoweed) comparing plants with and without the endophytic fungus *Alternaria oxytropis* (formerly *Undifilum oxytropis*). Endophyte status is confirmed by seed wash assay (SWA); plants were spatially paired (E+ / E-) to control for microsite and genetic variation.
@@ -13,7 +15,7 @@ This archive accompanies the manuscript "*Volatile insensitivity and localized a
 ## Repository Structure
 
 ```
-locoweed_zenodo/
+oxytropis-alternaria-volatiles_2026/
 ├── data-files/                          Raw source spreadsheets (all years/datasets)
 │   ├── 2022 Field Locoweed.xlsx
 │   ├── 2023 Field Locoweed.xlsx
@@ -50,7 +52,7 @@ locoweed_zenodo/
 │   ├── Supp Table 1_rawgh.xlsx
 │   ├── Supp Table 2_rawfield.xlsx
 │   └── gh_table_raw.xlsx
-├── summary_table.csv
+├── summary_table.csv                    Mean ± SE of each compound by SWA status
 ├── wiki.md                              Full methodological detail and analytical decisions
 └── README.md
 ```
@@ -74,9 +76,20 @@ See `wiki.md` for full methodological detail, analytical decisions, and known da
 Install required packages in R:
 
 ```r
-install.packages(c("tidyverse", "vegan", "compositions", "ggrepel",
-                   "indicspecies", "patchwork", "lme4", "lmerTest", "ggh4x"))
+install.packages(c("tidyverse", "readxl", "vegan", "compositions", "ggrepel",
+                   "indicspecies", "patchwork", "lme4", "lmerTest", "ggh4x",
+                   "rstudioapi", "knitr"))
 ```
+
+---
+
+## Citation
+
+This repository is archived on Zenodo and is publicly available under the DOI [10.5281/zenodo.22928586](https://doi.org/10.5281/zenodo.22928586). If you use these data or code, please cite:
+
+> Strand, J. (2026). *Locoweed Volatiles 2026: data and code for "Volatile insensitivity and localized alkaloids support commensalism in the Oxytropis sericea–Alternaria oxytropis association"* [Data set]. Zenodo. https://doi.org/10.5281/zenodo.22928586
+
+Please also cite the associated manuscript once published.
 
 ---
 
