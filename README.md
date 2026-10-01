@@ -8,7 +8,7 @@ Analysis of volatile organic compound (VOC) profiles in *Oxytropis sericea* (whi
 
 Data were collected in a greenhouse setting (Spring 2022, Spring 2023) and from natural field populations (2022, 2023). A 2019 historical field dataset is included for supplemental visualization only.
 
-This archive accompanies the manuscript "*Volatile insensitivity and localized alkaloids support commensalism in the Oxytropis sericea–Alternaria oxytropis association*" and contains the raw data, processing documentation, analysis scripts, and figures needed to reproduce the reported results.
+This archive accompanies the manuscript "*Volatile insensitivity and localized alkaloids support commensalism in the Oxytropis sericea–Alternaria oxytropis association*", accepted for publication in the *Journal of Chemical Ecology* (30 September 2026), and contains the raw data, processing documentation, analysis scripts, and figures needed to reproduce the reported results.
 
 ---
 
